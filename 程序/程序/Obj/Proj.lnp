@@ -1,0 +1,25 @@
+--cpu Cortex-M3
+".\obj\core_cm3.o"
+".\obj\system_stm32f10x.o"
+".\obj\startup_stm32f10x_md.o"
+".\obj\delay.o"
+".\obj\sys.o"
+".\obj\stm32f10x_gpio.o"
+".\obj\stm32f10x_rcc.o"
+".\obj\stm32f10x_usart.o"
+".\obj\misc.o"
+".\obj\main.o"
+".\obj\lcd1602.o"
+".\obj\timer.o"
+".\obj\stm32f10x_tim.o"
+".\obj\rc522.o"
+".\obj\exti.o"
+".\obj\stm32f10x_exti.o"
+".\obj\stmflash.o"
+".\obj\stm32f10x_flash.o"
+".\obj\24cxx.o"
+".\obj\myiic.o"
+--strict --scatter ".\Obj\Proj.sct"
+--summary_stderr --info summarysizes --map --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list ".\Obj\Proj.map" -o .\Obj\Proj.axf
