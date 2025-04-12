@@ -1,7 +1,7 @@
 .\obj\lcd1602.o: User\Device\LCD1602.c
 .\obj\lcd1602.o: .\Core_M3\stm32f10x.h
 .\obj\lcd1602.o: .\Core_M3\core_cm3.h
-.\obj\lcd1602.o: D:\Program Files\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\lcd1602.o: D:\Development_Tool\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
 .\obj\lcd1602.o: .\System\system_stm32f10x.h
 .\obj\lcd1602.o: .\System\stm32f10x_conf.h
 .\obj\lcd1602.o: .\User\inc\stm32f10x_adc.h

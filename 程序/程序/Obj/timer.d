@@ -3,7 +3,7 @@
 .\obj\timer.o: User\Device\sys.h
 .\obj\timer.o: .\Core_M3\stm32f10x.h
 .\obj\timer.o: .\Core_M3\core_cm3.h
-.\obj\timer.o: D:\Program Files\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\timer.o: D:\Development_Tool\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
 .\obj\timer.o: .\System\system_stm32f10x.h
 .\obj\timer.o: .\System\stm32f10x_conf.h
 .\obj\timer.o: .\User\inc\stm32f10x_adc.h

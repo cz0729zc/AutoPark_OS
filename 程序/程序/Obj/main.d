@@ -1,7 +1,7 @@
 .\obj\main.o: main.c
 .\obj\main.o: .\Core_M3\stm32f10x.h
 .\obj\main.o: .\Core_M3\core_cm3.h
-.\obj\main.o: D:\Program Files\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\main.o: D:\Development_Tool\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
 .\obj\main.o: .\System\system_stm32f10x.h
 .\obj\main.o: .\System\stm32f10x_conf.h
 .\obj\main.o: .\User\inc\stm32f10x_adc.h
@@ -35,3 +35,7 @@
 .\obj\main.o: .\User\Device\rc522.h
 .\obj\main.o: .\User\Device\exti.h
 .\obj\main.o: .\User\Device\stmflash.h
+.\obj\main.o: .\User\inc\usart1.h
+.\obj\main.o: D:\Development_Tool\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
+.\obj\main.o: D:\Development_Tool\Keil5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\obj\main.o: D:\Development_Tool\Keil5\ARM\ARMCC\Bin\..\include\string.h

@@ -19,7 +19,8 @@
 ".\obj\stm32f10x_flash.o"
 ".\obj\24cxx.o"
 ".\obj\myiic.o"
+".\obj\usart1.o"
 --strict --scatter ".\Obj\Proj.sct"
---summary_stderr --info summarysizes --map --xref --callgraph --symbols
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
 --list ".\Obj\Proj.map" -o .\Obj\Proj.axf

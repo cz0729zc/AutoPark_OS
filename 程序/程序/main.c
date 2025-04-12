@@ -6,7 +6,7 @@
 #include "rc522.h"
 #include "exti.h"
 #include "stmflash.h"
-
+#include "usart1.h"
 
 #define uchar unsigned char 
 #define uint  unsigned int 
@@ -15,6 +15,22 @@ unsigned char g_ucTempbuf[4];
 unsigned  char table[] = {"0123456789ABCDEF"};
 unsigned char status;
 
+// unsigned char Card1[] = {0xAC,0xA1,0x37,0x49}; //车主卡
+// unsigned char Card2[] = {0x33,0x0E,0x97,0xFA}; //车主卡
+// unsigned char Card3[] = {0x06,0x09,0xA8,0xAC}; //车主卡
+// unsigned char Card4[] = {0x00,0x00,0x00,0x00}; //车主卡
+
+unsigned char sms_phone1[] = {"15872452695"};
+unsigned char sms_phone2[] = {"15872452695"};
+unsigned char sms_phone3[] = {"15872452695"};
+unsigned char sms_phone4[] = {"15872452695"};
+
+unsigned char sms_phoneADMIN[] = {"16671009468"};
+
+unsigned char msg1[] = {"Car 1 is out of money!"};
+unsigned char msg2[] = {"Car 2 is out of money!"};
+unsigned char msg3[] = {"Car 3 is out of money!"};
+unsigned char msg4[] = {"Car 4 is out of money!"};
 //红外传感器
 #define IR_GPIO     GPIOB
 #define IR11_Pin    GPIO_Pin_12
@@ -74,8 +90,8 @@ uchar Step_QHCount = 0;//计前后步数
 #define Price  2 //默认
 u16 Car1Money = 100;
 u16 Car2Money = 100;
-u16 Car3Money = 100;
-u16 Car4Money = 3;
+u16 Car3Money = 3;
+u16 Car4Money = 1;
 
 extern u8 Second1;
 extern u8 Second2;
@@ -89,7 +105,10 @@ u8 Card4_Flag = 0;
 
 u16 Pay_Money = 0;
 
-
+void Print_Str(USART_TypeDef* USARTx,u8 *str);
+void Print_Char(USART_TypeDef* USARTx,u8 ch);
+void Send_SMS(u8 *sms_phone,u8 *msg);
+char WiFi_SendCmd(char *cmd, int timeout);
 int main(void)
 {	
 
@@ -111,13 +130,14 @@ int main(void)
 	Init_Component_IO();
 	NVIC_Configuration();// 设置中断优先级分组
 	
-	
+	Usart1_Init(9600);	
 	Init_LCD1602();//初始化1602
 	
 //	EXTIX_Init();		//外部中断初始化
 		
-	SPK(1); //停止蜂鸣
-		
+	SPK(0); //停止蜂鸣
+	Send_SMS(sms_phone4,msg4);	
+  
 	while(1)
 	{
     Dis1[14] = Second / 10 + 0x30;
@@ -160,7 +180,7 @@ int main(void)
 			
 			Display();//显示程序
 			
-			if((g_ucTempbuf[0] == 0x57)&&(g_ucTempbuf[1] == 0xC1)&&(g_ucTempbuf[2] == 0xC1)&&(g_ucTempbuf[3] == 0x60))
+			if((g_ucTempbuf[0] == 0xAC)&&(g_ucTempbuf[1] == 0xA1)&&(g_ucTempbuf[2] == 0x37)&&(g_ucTempbuf[3] == 0x49))
 			{
         if(Card1_Flag == 0)//第一次刷卡
         {
@@ -173,7 +193,7 @@ int main(void)
           DisplayString(0,1,"In layer 1 no. 1"); //1层一号车位
             
           IN1(0);IN2(1);//X轴电机反转出车位
-          delay_ms(1000);//转1一秒 
+          delay_ms(1000);//转1一秒
           IN1(0);IN2(0);
           GPIO_WriteBit(Key_GPIO,Key1_Pin,Bit_SET);//上拉再检验
           SPK(1); //报警响一声提示
@@ -282,23 +302,33 @@ int main(void)
               WriteData(Disje[i]);
             }
             
+            Send_SMS(sms_phone1,msg1);
             GPIO_WriteBit(Key_GPIO,Key2_Pin,Bit_SET);//上拉再检验
             SPK(1); //报警响起
 //            while(Key2 == 1);//等待管理人眼按下确认才放行
+      int time = 0;
+			delay_ms(5000);
             while(1)//等待管理人眼按下确认才放行
-          {
-            if(Key2 == 0)//检测到
-            {
-              delay_ms(50);
-              if(Key2 == 0)
-              {
-                break;
-              }
-            }
-          }
-          
-            SPK(0); //报警取消
-          }
+			  {
+				  if(time < 40)
+				  {
+						if(Key2 == 0)//检测到
+						{
+						  delay_ms(50);
+						  if(Key2 == 0)
+						  {
+							break;
+						  }
+						}
+						time++;
+				  }
+				  else
+				  {
+					Send_SMS(sms_phoneADMIN,msg1);
+          break;
+				  }
+			  }
+         }
 
           IN1(0);IN2(1);//X轴电机反转出车位
           delay_ms(1000);//转1秒 
@@ -328,7 +358,7 @@ int main(void)
           delay_ms(1500);//等待一秒半
         }
 			}
-      else  if((g_ucTempbuf[0] == 0xD6)&&(g_ucTempbuf[1] == 0xED)&&(g_ucTempbuf[2] == 0xC6)&&(g_ucTempbuf[3] == 0xF7))
+      else  if((g_ucTempbuf[0] == 0x33)&&(g_ucTempbuf[1] == 0x0E)&&(g_ucTempbuf[2] == 0x97)&&(g_ucTempbuf[3] == 0xFA))
 			{
         if(Card2_Flag == 0)//第一次刷卡
         {
@@ -453,18 +483,29 @@ int main(void)
             GPIO_WriteBit(Key_GPIO,Key2_Pin,Bit_SET);//上拉再检验
             SPK(1); //报警响起
 //            while(Key2 == 1);//等待管理人眼按下确认才放行
-            while(1)///等待管理人眼按下确认才放行
-          {
-            if(Key2 == 0)
+            delay_ms(5000);
+            SPK(0); //报警关闭提示
+            Send_SMS(sms_phone2,msg2);
+            int time = 0;
+            while(1)//等待管理人眼按下确认才放行
             {
-              delay_ms(50);
-              if(Key2 == 0)
+              if(time < 40)
               {
-                break;
+                if(Key2 == 0)//检测到
+                {
+                  delay_ms(50);
+                  if(Key2 == 0)
+                  {
+                  break;
+                  }
+                }
+                time++;
+              }
+              else
+              {
+              Send_SMS(sms_phoneADMIN,msg2);
               }
             }
-          }
-            SPK(0); //报警取消
           }
 
           IN1(0);IN2(1);//X轴电机开启反转2秒从1层2号车位导出汽车，Y轴电机不转
@@ -499,7 +540,7 @@ int main(void)
           delay_ms(1500);//等待一秒半
         }
 			}
-      else  if((g_ucTempbuf[0] == 0x85)&&(g_ucTempbuf[1] == 0x16)&&(g_ucTempbuf[2] == 0x81)&&(g_ucTempbuf[3] == 0x5F)) //2层1车位
+      else  if((g_ucTempbuf[0] == 0x06)&&(g_ucTempbuf[1] == 0x09)&&(g_ucTempbuf[2] == 0xA8)&&(g_ucTempbuf[3] == 0xAC)) //2层1车位
 			{
         if(Card3_Flag == 0)//第一次刷卡
         {
@@ -625,20 +666,31 @@ int main(void)
             }
             
             GPIO_WriteBit(Key_GPIO,Key2_Pin,Bit_SET);//上拉再检验
+            Send_SMS(sms_phone3,msg3);
             SPK(1); //报警响起
-//            while(Key2 == 1);//等待管理人眼按下确认才放行
+            delay_ms(5000);//响一声
+            SPK(0); //报警关闭提示
+            u8 time = 0;
             while(1)//等待管理人眼按下确认才放行
-          {
-            if(Key2 == 0)
             {
-              delay_ms(50);
-              if(Key2 == 0)
+              if(time < 40)
               {
-                break;
+                if(Key2 == 0)//检测到
+                {
+                  delay_ms(50);
+                  if(Key2 == 0)
+                  {
+                  break;
+                  }
+                }
+                time++;
+              }
+              else
+              {
+              Send_SMS(sms_phoneADMIN,msg3);
               }
             }
-          }                      
-            SPK(0); //报警取消
+
           }
 
           
@@ -675,7 +727,7 @@ int main(void)
           delay_ms(1500);//等待一秒半
         }
 			}
-      else if((g_ucTempbuf[0] == 0x52)&&(g_ucTempbuf[1] == 0xba)&&(g_ucTempbuf[2] == 0xb1)&&(g_ucTempbuf[3] == 0x73))
+      else if((g_ucTempbuf[0] == 0xB6)&&(g_ucTempbuf[1] == 0xCF)&&(g_ucTempbuf[2] == 0xAA)&&(g_ucTempbuf[3] == 0xAC))
 			{
         if(Card4_Flag == 0)//第一次刷卡
         {
@@ -804,21 +856,34 @@ int main(void)
             }
             
             GPIO_WriteBit(Key_GPIO,Key2_Pin,Bit_SET);//上拉再检验
+
+            Send_SMS(sms_phone4,msg4);
+
             delay_ms(10);
             SPK(1); //报警响起
-//            while(Key2 == 1);//等待管理人眼按下确认才放行
+            delay_ms(5000);
+            SPK(0); //报警取消
+            while(Key2 == 1);//等待管理人眼按下确认才放行
+            u8 time = 0;
             while(1)//等待管理人眼按下确认才放行
             {
-              if(Key2 == 0)
+              if(time < 40)
               {
-                delay_ms(50);
-                if(Key2 == 0)
+                if(Key2 == 0)//检测到
                 {
+                  delay_ms(50);
+                  if(Key2 == 0)
+                  {
                   break;
+                  }
                 }
+                time++;
               }
-            }             
-            SPK(0); //报警取消
+              else
+              {
+              Send_SMS(sms_phoneADMIN,msg4);
+              }
+            }
           }
 
           IN3(0);IN4(1);//Y轴电机反转1秒从2层2号车位到1层2号
@@ -924,7 +989,7 @@ void Init_Component_IO(void)
 	//电机
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_Pin = IN1_Pin+IN2_Pin+IN3_Pin+IN4_Pin;
+	GPIO_InitStructure.GPIO_Pin = IN1_Pin | IN2_Pin | IN3_Pin | IN4_Pin;
 	GPIO_Init(Motor_GPIO,&GPIO_InitStructure);
 }
 
@@ -1077,4 +1142,93 @@ u16 Get_Adc(u8 ch)
 	return ADC1->DR; //返回adc值 
 }
 
+/**
+  * @brief 发送短信（使用u1_printf替代Print_Str）
+  * @param sms_phone 目标手机号（需以NULL结尾）
+  * @param msg 短信内容（需以NULL结尾）
+  * @note 需确保全局变量Usart1_TxBuff已定义且足够大（建议256字节以上）
+  */
+ void Send_SMS(u8 *sms_phone, u8 *msg)
+ {
+    // 1. 关闭回显（只需一次）
+    u1_printf("ATE0\r\n");
+    delay_ms(50);
+    
+    // 2. 设置字符集为GSM
+    u1_printf("AT+CSCS=\"GSM\"\r\n");
+    delay_ms(400);
+    
+    // 3. 设置为文本模式
+    u1_printf("AT+CMGF=1\r\n");
+    delay_ms(400);
+    
+    // 4. 设置目标号码
+    u1_printf("AT+CMGS=\"%s\"\r\n", sms_phone); // 直接格式化号码
+    delay_ms(400);
+    
+    // 5. 发送短信内容（含换行和结束符）
+    u1_printf("%s\r\n%s\r\n%s", Dis1, Dis2, msg); // 合并内容发送
+    delay_ms(400);
+    
+    // 6. 发送结束符Ctrl+Z（0x1A）
+    USART1->DR = 0x1A; // 直接操作寄存器发送
+    while((USART1->SR & 0x40) == 0); // 等待发送完成
+    delay_ms(400);
+ }
+ 
+//void Send_SMS(u8 *sms_phone,u8 *msg)//电话，信息
+//{
+//		Print_Str(USART1,"ATE0\r\n");delay_ms(50);	 //
+//		Print_Str(USART1,"ATE0\r\n");delay_ms(50);	 //
+//		Print_Str(USART1,"ATE0\r\n");delay_ms(50);	 //
+//		Print_Str(USART1,"AT+CSCS=\"GSM\"\r\n");  //发送 命令 AT+CSCS="GSM"
+//		delay_ms(400);//要延时
+//		Print_Str(USART1,"AT+CMGF=1\r\n");	   //发送 命令 AT+CMGF=1
+//		delay_ms(400);
 
+//		Print_Str(USART1,"AT+CMGS=\"");//此处修改为对方的电话号  发送 命令 AT+CMGS=""
+//		Print_Str(USART1,sms_phone);//此处修改为对方的电话号  发送 命令 AT+CMGS=""
+//		Print_Str(USART1,"\"\r\n");//此处修改为对方的电话号  发送 命令 AT+CMGS=""
+//		delay_ms(400);//要延时
+//	
+//		Print_Str(USART1,Dis1);//修改短信内容
+//		Print_Str(USART1,"\r\n");
+//		Print_Str(USART1,Dis2);//修改短信内容
+//		Print_Str(USART1,"\r\n");
+//	
+//		Print_Str(USART1,msg);
+//		delay_ms(400);//要延时
+//	
+//		Print_Char(USART1,0x1a);
+//		delay_ms(400);//要延时   	  
+//}
+
+/*-------------------------------------------------*/
+/*函数名：WiFi发送设置指令                         */
+/*参  数：cmd：指令                                */
+/*参  数：timeout：超时时间（100ms的倍数）         */
+/*返回值：0：正确   其他：错误                     */
+/*-------------------------------------------------*/
+char WiFi_SendCmd(char *cmd, int timeout)
+{
+	Usart1_RxCounter=0;                           //WiFi接收数据量变量清零                        
+	memset(Usart1_RxBuff,0,USART1_RXBUFF_SIZE);     //清空WiFi接收缓冲区 
+	
+	u1_printf("%s\r\n",cmd);                  //发送指令
+	//Serial_Printf("\r\n 指令发送成功");
+	while(timeout--){                           //等待超时时间到0
+		delay_ms(100);                          //延时100ms
+		if(strstr(Usart1_RxBuff,"OK"))            //如果接收到OK表示指令成功
+			break;       						//主动跳出while循环
+	}
+	if(timeout<=0)
+  {
+    u1_printf("fail\r\n"); 
+    return 1; 
+  }                    //如果timeout<=0，说明超时时间到了，也没能收到OK，返回1
+	else 
+  {
+    u1_printf("OK\r\n"); 
+    return 0; 
+  }                   //如果timeout>0，说明收到OK，返回0
+}

@@ -3,7 +3,7 @@
 .\obj\myiic.o: User\Device\sys.h
 .\obj\myiic.o: .\Core_M3\stm32f10x.h
 .\obj\myiic.o: .\Core_M3\core_cm3.h
-.\obj\myiic.o: D:\Program Files\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\myiic.o: D:\Development_Tool\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
 .\obj\myiic.o: .\System\system_stm32f10x.h
 .\obj\myiic.o: .\System\stm32f10x_conf.h
 .\obj\myiic.o: .\User\inc\stm32f10x_adc.h

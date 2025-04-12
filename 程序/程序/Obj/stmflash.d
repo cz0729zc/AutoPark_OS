@@ -3,7 +3,7 @@
 .\obj\stmflash.o: User\Device\sys.h
 .\obj\stmflash.o: .\Core_M3\stm32f10x.h
 .\obj\stmflash.o: .\Core_M3\core_cm3.h
-.\obj\stmflash.o: D:\Program Files\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\stmflash.o: D:\Development_Tool\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
 .\obj\stmflash.o: .\System\system_stm32f10x.h
 .\obj\stmflash.o: .\System\stm32f10x_conf.h
 .\obj\stmflash.o: .\User\inc\stm32f10x_adc.h
@@ -32,4 +32,4 @@
 .\obj\stmflash.o: .\User\inc\misc.h
 .\obj\stmflash.o: User\Device\delay.h
 .\obj\stmflash.o: User\Device\usart.h
-.\obj\stmflash.o: D:\Program Files\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
+.\obj\stmflash.o: D:\Development_Tool\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
