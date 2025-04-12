@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Obj\Proj.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Obj\Proj.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060528: Last Updated: Sat Apr 12 17:05:01 2025
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060528: Last Updated: Sat Apr 12 17:51:06 2025
 <BR><P>
 <H3>Maximum Stack Usage =        324 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -915,11 +915,12 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[6e]"></a>main</STRONG> (Thumb, 5844 bytes, Stack size 0 bytes, main.o(.text))
+<P><STRONG><a name="[6e]"></a>main</STRONG> (Thumb, 6512 bytes, Stack size 0 bytes, main.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 168 + Unknown Stack Size
 <LI>Call Chain = main &rArr; Send_SMS &rArr; u1_printf &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;WriteData
+<BR>[Calls]<UL><LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;u1_printf
+<LI><a href="#[85]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;WriteData
 <LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;WriteCommand
 <LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Usart1_Init
 <LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM3_Int_Init
@@ -945,12 +946,12 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_entry_main
 </UL>
 
-<P><STRONG><a name="[99]"></a>M_Forward</STRONG> (Thumb, 498 bytes, Stack size 8 bytes, main.o(.text), UNUSED)
+<P><STRONG><a name="[99]"></a>M_Forward</STRONG> (Thumb, 454 bytes, Stack size 8 bytes, main.o(.text), UNUSED)
 <BR><BR>[Calls]<UL><LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_WriteBit
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
 </UL>
 
-<P><STRONG><a name="[9a]"></a>M_Backward</STRONG> (Thumb, 454 bytes, Stack size 8 bytes, main.o(.text), UNUSED)
+<P><STRONG><a name="[9a]"></a>M_Backward</STRONG> (Thumb, 472 bytes, Stack size 8 bytes, main.o(.text), UNUSED)
 <BR><BR>[Calls]<UL><LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_WriteBit
 <LI><a href="#[88]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delay_ms
 </UL>
@@ -1501,6 +1502,7 @@ Global Symbols
 <LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 </UL>
 <BR>[Called By]<UL><LI><a href="#[9b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;WiFi_SendCmd
+<LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 <LI><a href="#[86]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Send_SMS
 </UL>
 

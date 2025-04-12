@@ -26,7 +26,7 @@ unsigned char sms_phone3[] = {"15872452695"};
 unsigned char sms_phone4[] = {"15872452695"};
 
 unsigned char sms_phoneADMIN[] = {"16671009468"};
-
+unsigned char sms_phoneADMIN2[] = {"18037827721"};
 unsigned char msg1[] = {"Car 1 is out of money!"};
 unsigned char msg2[] = {"Car 2 is out of money!"};
 unsigned char msg3[] = {"Car 3 is out of money!"};
@@ -91,7 +91,7 @@ uchar Step_QHCount = 0;//计前后步数
 u16 Car1Money = 100;
 u16 Car2Money = 100;
 u16 Car3Money = 3;
-u16 Car4Money = 1;
+u16 Car4Money = 0;
 
 extern u8 Second1;
 extern u8 Second2;
@@ -136,7 +136,7 @@ int main(void)
 //	EXTIX_Init();		//外部中断初始化
 		
 	SPK(0); //停止蜂鸣
-	Send_SMS(sms_phone4,msg4);	
+	//Send_SMS(sms_phoneADMIN,msg4);	
   
 	while(1)
 	{
@@ -195,6 +195,7 @@ int main(void)
           IN1(0);IN2(1);//X轴电机反转出车位
           delay_ms(1000);//转1一秒
           IN1(0);IN2(0);
+          
           GPIO_WriteBit(Key_GPIO,Key1_Pin,Bit_SET);//上拉再检验
           SPK(1); //报警响一声提示
           delay_ms(100);//响一声 
@@ -216,7 +217,12 @@ int main(void)
           
           IN1(1);IN2(0);//X轴电机开启正转1秒进入1层1号车位，Y轴电机不转
           delay_ms(1000);//正转1秒
-          
+          IN1(1);IN2(0);
+          SPK(1); //报警响起
+          delay_ms(100);//响一声 
+          SPK(0); //报警取消
+
+          IN1(1);IN2(0);//X轴电机开启正转1秒进入1层1号车位，Y轴电机不转
           while(1)//等待一层一号车位传感器被感应
           {
             if(IR11 == 0)//检测到
@@ -310,8 +316,9 @@ int main(void)
 			delay_ms(5000);
             while(1)//等待管理人眼按下确认才放行
 			  {
-				  if(time < 40)
+				  if(time < 2000) //2分钟没付钱发消息给管理员
 				  {
+            delay_ms(1);
 						if(Key2 == 0)//检测到
 						{
 						  delay_ms(50);
@@ -333,6 +340,7 @@ int main(void)
           IN1(0);IN2(1);//X轴电机反转出车位
           delay_ms(1000);//转1秒 
           IN1(0);IN2(0);
+          
           GPIO_WriteBit(Key_GPIO,Key1_Pin,Bit_SET);//上拉再检验
           SPK(1); //报警响一声提示可以开车了
           delay_ms(100);//响一声 
@@ -353,8 +361,10 @@ int main(void)
           
           IN1(1);IN2(0);//X轴电机开启正转1秒从停车处恢复原本车位
           delay_ms(1000);//正转1一秒
-
           IN1(0);IN2(0);//停止
+          SPK(1); //报警响起
+          delay_ms(100);//响一声 
+          SPK(0); //报警取消
           delay_ms(1500);//等待一秒半
         }
 			}
@@ -372,12 +382,19 @@ int main(void)
             
           IN1(0);IN2(1);//X轴电机反转出车位
           delay_ms(1000);//转一秒 
+
+          SPK(1); //报警响起
+          delay_ms(100);//响一声 
+          SPK(0); //报警取消
+
           delay_ms(1000);//转一秒 
+
+          SPK(1); //报警响起
+          delay_ms(100);//响一声 
+          SPK(0); //报警取消
+          
           IN1(0);IN2(0);
           GPIO_WriteBit(Key_GPIO,Key1_Pin,Bit_SET);//上拉再检验
-          SPK(1); //报警响一声提示
-          delay_ms(100);//响一声 
-          SPK(0); //报警关闭提示
           
 //          while(Key1 == 1);//等待车管人员按下确认确定车主放好车后按下按键，系统自动停车
           while(1)//等待车管人员按下确认确定车主放好车后按下按键，系统自动停车
@@ -393,7 +410,18 @@ int main(void)
           }            
           IN1(1);IN2(0);//X轴电机开启正转1秒进入1层1号车位，Y轴电机不转
           delay_ms(1000);//正转1秒
+
+          SPK(1); //报警响起
+          delay_ms(100);//响一声 
+          SPK(0); //报警取消
+
           delay_ms(1000);//正转1秒
+
+          SPK(1); //报警响起
+          delay_ms(100);//响一声 
+          SPK(0); //报警取消
+
+          IN1(1);IN2(0);//X轴电机开启正转1秒进入1层2号车位，Y轴电机不转
 //          while(IR12 == 1)//等待一层一号车位传感器被感应
 //          {  
 //          }
@@ -489,8 +517,9 @@ int main(void)
             int time = 0;
             while(1)//等待管理人眼按下确认才放行
             {
-              if(time < 40)
+              if(time < 2000)
               {
+                delay_ms(1);
                 if(Key2 == 0)//检测到
                 {
                   delay_ms(50);
@@ -504,6 +533,7 @@ int main(void)
               else
               {
               Send_SMS(sms_phoneADMIN,msg2);
+              break;
               }
             }
           }
@@ -578,6 +608,7 @@ int main(void)
           IN1(1);IN2(0);//X轴电机开启正转1秒进入1层1号车位，Y轴电机不转
           delay_ms(1000);//正转1一秒
           IN1(0);IN2(0);//停止
+          
           IN3(1);IN4(0);//Y轴电机开启正转1一秒进入2层1号车位
           delay_ms(1000);//正转1一秒
           
@@ -670,11 +701,12 @@ int main(void)
             SPK(1); //报警响起
             delay_ms(5000);//响一声
             SPK(0); //报警关闭提示
-            u8 time = 0;
+            int time = 0;
             while(1)//等待管理人眼按下确认才放行
             {
-              if(time < 40)
+              if(time < 2000)
               {
+                delay_ms(1);
                 if(Key2 == 0)//检测到
                 {
                   delay_ms(50);
@@ -688,6 +720,7 @@ int main(void)
               else
               {
               Send_SMS(sms_phoneADMIN,msg3);
+              break;
               }
             }
 
@@ -697,7 +730,12 @@ int main(void)
           IN3(0);IN4(1);//Y轴电机开启反转1秒从2层1号车位导出汽车
           delay_ms(1000);//转1秒
           IN3(0);IN4(0);//停止
-          delay_ms(100);
+          
+          
+          SPK(1); //报警响起
+          delay_ms(100);//响一声 
+          SPK(0); //报警取消
+          
           IN1(0);IN2(1);
           delay_ms(1000);//转1秒
           IN1(0);IN2(0);//停止
@@ -721,9 +759,17 @@ int main(void)
           IN1(1);IN2(0);//X轴电机开启正转1秒从放车位到1层1号
           delay_ms(1000);//正转1秒
           IN1(0);IN2(0);//停止
+          SPK(1); //报警响起
+          delay_ms(100);//响一声 
+          SPK(0); //报警取消
+
           IN3(1);IN4(0);//Y轴电机开启正转1秒从1层1号到2层1号
           delay_ms(1000);//转1秒
           IN3(0);IN4(0);//停止
+          SPK(1); //报警响起
+          delay_ms(100);//响一声 
+          SPK(0); //报警取消
+
           delay_ms(1500);//等待一秒半
         }
 			}
@@ -743,10 +789,20 @@ int main(void)
            IN3(0);IN4(1);//Y轴电机反转1秒从2层2到到1层2号车位
            delay_ms(1000);//转1秒
            IN3(0);IN4(0);//停止
-          delay_ms(100);
+
+           SPK(1); //报警响起
+           delay_ms(100);//响一声 
+           SPK(0); //报警取消
+
           IN1(0);IN2(1); //x轴电机反转2秒到放车点
           delay_ms(1000);//转1秒
+          SPK(1); //报警响起
+          delay_ms(100);//响一声 
+          SPK(0); //报警取消
           delay_ms(1000);//转1秒
+          SPK(1); //报警响起
+          delay_ms(100);//响一声 
+          SPK(0); //报警取消
           IN1(0);IN2(0);//停止
           
            GPIO_WriteBit(Key_GPIO,Key1_Pin,Bit_SET);//上拉再检验
@@ -767,10 +823,19 @@ int main(void)
           }          
           IN1(1);IN2(0);//X轴电机开启正转2秒进入1层2号车位，Y轴电机不转
           delay_ms(1000);//正转1秒
+          SPK(1); //报警响起
+          delay_ms(100);//响一声 
+          SPK(0); //报警取消
           delay_ms(1000);//正转1秒
+          SPK(1); //报警响起
+          delay_ms(100);//响一声 
+          SPK(0); //报警取消
           IN1(0);IN2(0);//停止
           IN3(1);IN4(0);//Y轴电机开启正转2秒进入2层车位
           delay_ms(1000);//转1秒
+          SPK(1); //报警响起
+          delay_ms(100);//响一声 
+          SPK(0); //报警取消
 //          while(IR22 == 1)//等待2层2号车位传感器被感应
 //          {  
 //          }
@@ -863,12 +928,13 @@ int main(void)
             SPK(1); //报警响起
             delay_ms(5000);
             SPK(0); //报警取消
-            while(Key2 == 1);//等待管理人眼按下确认才放行
-            u8 time = 0;
+            //while(Key2 == 1);//等待管理人眼按下确认才放行
+            int time = 0;
             while(1)//等待管理人眼按下确认才放行
             {
-              if(time < 40)
+              if(time < 2000)
               {
+                delay_ms(1);
                 if(Key2 == 0)//检测到
                 {
                   delay_ms(50);
@@ -882,18 +948,29 @@ int main(void)
               else
               {
               Send_SMS(sms_phoneADMIN,msg4);
+              break;
               }
+              u1_printf("time = %d\n",time);
             }
           }
 
           IN3(0);IN4(1);//Y轴电机反转1秒从2层2号车位到1层2号
           delay_ms(1000);//转1秒
+          SPK(1); //报警响起
+          delay_ms(100);//响一声 
+          SPK(0); //报警取消
           IN3(0);IN4(0);//停止
           delay_ms(100);
           
           IN1(0);IN2(1);//X轴电机开启反转2秒从1层2号车位导出汽车，Y轴电机不转
           delay_ms(1000);//转1秒
+          SPK(1); //报警响起
+          delay_ms(100);//响一声 
+          SPK(0); //报警取消
           delay_ms(1000);//转1秒
+          SPK(1); //报警响起
+          delay_ms(100);//响一声 
+          SPK(0); //报警取消
           IN1(0);IN2(0);//停止
           
           GPIO_WriteBit(Key_GPIO,Key1_Pin,Bit_SET);//上拉再检验
@@ -914,10 +991,19 @@ int main(void)
             } 
           IN1(1);IN2(0);//X轴电机开启正转2秒到1层2号车位
           delay_ms(1000);//转1秒
+          SPK(1); //报警响起
+          delay_ms(100);//响一声 
+          SPK(0); //报警取消
           delay_ms(1000);//转1秒
+          SPK(1); //报警响起
+          delay_ms(100);//响一声 
+          SPK(0); //报警取消
           IN1(0);IN2(0);//停止
           IN3(1);IN4(0);//Y轴电机正转从1层2号升到2层2号
           delay_ms(1000);//转1秒
+          SPK(1); //报警响起
+          delay_ms(100);//响一声 
+          SPK(0); //报警取消
           IN3(0);IN4(0);//停止
           delay_ms(1500);//等待一秒半
         }
