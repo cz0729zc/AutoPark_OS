@@ -28,22 +28,20 @@ Project File Date:  04/12/2025
 *** Using Compiler 'V5.06 update 5 (build 528)', folder: 'D:\Development_Tool\Keil5\ARM\ARMCC\Bin'
 Build target 'Proj'
 compiling main.c...
-main.c(84): warning:  #1295-D: Deprecated declaration M_Backward - give arg types
-  void M_Backward();//向后转动
-main.c(85): warning:  #1295-D: Deprecated declaration M_Forward - give arg types
-  void M_Forward();//向前转动
-main.c(115): warning:  #177-D: variable "num"  was declared but never referenced
-  	u16 num = 0;
-main.c(117): warning:  #177-D: variable "System_Run_Count"  was declared but never referenced
-  	u8 System_Run_Count = 0;//系统运行计数。多次记录，看卡是否存在
-main.c(1320): warning:  #1-D: last line of file ends without a newline
+main.c(117): warning:  #1295-D: Deprecated declaration M_Backward - give arg types
+  void M_Backward();
+main.c(118): warning:  #1295-D: Deprecated declaration M_Forward - give arg types
+  void M_Forward();
+main.c(125): warning:  #177-D: variable "num"  was declared but never referenced
+      u16 num = 0;
+main.c(942): warning:  #1-D: last line of file ends without a newline
   }
-main.c: 5 warnings, 0 errors
+main.c: 4 warnings, 0 errors
 linking...
-Program Size: Code=27520 RO-data=820 RW-data=356 ZI-data=3684  
+Program Size: Code=26160 RO-data=820 RW-data=336 ZI-data=3680  
 FromELF: creating hex file...
-".\Obj\Proj.axf" - 0 Error(s), 5 Warning(s).
-Build Time Elapsed:  00:00:01
+".\Obj\Proj.axf" - 0 Error(s), 4 Warning(s).
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>
