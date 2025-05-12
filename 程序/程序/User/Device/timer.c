@@ -48,29 +48,39 @@ u8 Second2 = 0;
 u8 Second3 = 0;
 u8 Second4 = 0;
 
-void TIM3_IRQHandler(void)   //TIM3中断
+extern u8 Card1_Slot;  // 记录卡片1对应的车位，0表示未分配
+extern u8 Card2_Slot;  // 记录卡片2对应的车位
+extern u8 Card3_Slot;  // 记录卡片3对应的车位
+extern u8 Card4_Slot;  // 记录卡片4对应的车位
+
+// 卡片使用标志
+extern u8 Card1_Flag;
+extern u8 Card2_Flag;
+extern u8 Card3_Flag;
+extern u8 Card4_Flag;
+
+void TIM3_IRQHandler(void)
 {
-	static u8 num = 0;
-		if(TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET) //检查指定的TIM中断发生与否:TIM 中断源 
-		{
-			TIM_ClearITPendingBit(TIM3, TIM_IT_Update  );  //清除TIMx的中断待处理位:TIM 中断源 
-		
-			if(num++ >= 20)
-			{
-        num = 0;
+    static u8 num = 0;
+    if(TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET)
+    {
+        TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
         
-        Second++;
-        if(Second == 60)
+        if(num++ >= 20)  // 20 * 50ms=1s
         {
-           Second = 0;
+            num = 0;
+            Second++;  // 系统时间
+            // 系统秒计数器（超过60清零）
+            if(++Second >= 60) Second = 0;
+            // 条件计时：只有卡片已使用且分配了车位时才计时
+            if(Card1_Flag && Card1_Slot) Second1++;
+            if(Card2_Flag && Card2_Slot) Second2++;
+            if(Card3_Flag && Card3_Slot) Second3++;
+            if(Card4_Flag && Card4_Slot) Second4++;
+		
+            // u1_printf("Timers: %d %d %d %d\r\n", Second1, Second2, Second3, Second4);
         }
-				Second1++;
-        Second2++;
-        Second3++;
-        Second4++;
-        
-			}
-		}
+    }
 }
 
 

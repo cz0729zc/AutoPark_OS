@@ -23,11 +23,11 @@ unsigned char Cards3[] = {0x06,0x09,0xA8,0xAC};
 unsigned char Cards4[] = {0xB6,0xCF,0xAA,0xAC};
 
 // ∂Ã–≈œ‡πÿ
-unsigned char sms_phone1[] = {"15872452695"};
-unsigned char sms_phone2[] = {"15872452695"};
-unsigned char sms_phone3[] = {"15872452695"};
-unsigned char sms_phone4[] = {"15872452695"};
-unsigned char sms_phoneADMIN[] = {"16671009468"};
+unsigned char sms_phone1[] = {"18367316124"};
+unsigned char sms_phone2[] = {"18367316124"};
+unsigned char sms_phone3[] = {"18367316124"};
+unsigned char sms_phone4[] = {"18367316124"};
+unsigned char sms_phoneADMIN[] = {"18058905095"};
 unsigned char msg_no_money[] = {"Car is out of money!"};
 unsigned char msg_no_slot[] = {"No available slot!"};
 
